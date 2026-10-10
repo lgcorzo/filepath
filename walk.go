@@ -27,7 +27,11 @@ func Walk(root string, walkFn WalkFunc) error {
 	if err != nil {
 		return walkFn(root, nil, err)
 	}
-	return walk(root, info, walkFn)
+	err = walk(root, info, walkFn)
+	if err == ErrSkipDir || err == ErrSkipFile {
+		return nil
+	}
+	return err
 }
 
 // byName implements sort.Interface for sorting os.FileInfo list.
@@ -84,10 +88,10 @@ var ErrSkipFile = errors.New("skip this file")
 func walk(path string, info os.FileInfo, walkFn WalkFunc) error {
 	err := walkFn(path, info, nil)
 	if err != nil {
-		if info.Mode().IsDir() && err == ErrSkipDir {
+		if info.IsDir() && err == ErrSkipDir {
 			return nil
 		}
-		if info.Mode().IsRegular() && err == ErrSkipFile {
+		if err == ErrSkipFile {
 			return nil
 		}
 		return err
@@ -103,16 +107,9 @@ func walk(path string, info os.FileInfo, walkFn WalkFunc) error {
 	}
 	for _, fileInfo := range fis {
 		filename := filepath.Join(path, fileInfo.Name())
+		err = walk(filename, fileInfo, walkFn)
 		if err != nil {
-			if err = walkFn(filename, fileInfo, err); err != nil && err != ErrSkipDir && err != ErrSkipFile {
-				return err
-			}
-		} else {
-			err = walk(filename, fileInfo, walkFn)
-			if err != nil {
-				if err == ErrSkipDir || err == ErrSkipFile {
-					return nil
-				}
+			if !fileInfo.IsDir() || err != ErrSkipDir {
 				return err
 			}
 		}
