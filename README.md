@@ -31,5 +31,5 @@ Package `filepath` is an alternative implementation of Go's filepath.Walk() to c
 
 ### Fork Maintenance & Agent Transparency
 
-- **Changes vs. Upstream:** Security dependency updates, CI/CD workflow fixes, and CodeQL remediation are tracked in the [commit history](../../commits) and [Pull Requests](../../pulls?q=is%3Apr).
+- **Changes vs. Upstream:** Security dependency updates, CI/CD workflow fixes, and CodeQL remediation are tracked in the [commit history](https://github.com/lgcorzo/filepath/commits) and [Pull Requests](https://github.com/lgcorzo/filepath/pulls?q=is%3Apr).
 - **Agent Tagging (`[agent]`):** Commits and pull requests generated automatically by agents in the Dark Gravity pipeline are prefixed with `[agent]` to distinguish automated maintenance from manual work.
